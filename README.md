@@ -1,83 +1,139 @@
-Code necessary to reproduce figures of the manuscript
+# Deconvolution of ex-vivo drug screening data and bulk tissue expression predicts the abundance and viability of cancer cell subpopulations
 
-## Deconvolution of ex-vivo drug screening data and bulk tissue expression predicts the abundance and viability of cancer cell subpopulations
+This repository contains code to reproduce all figures from the manuscript.
+
+## ClimbTheCliff R Package
+
+The main methods developed in this work (CLIMB and CLIFF) are available as an R package:
+
+**Repository:** https://github.com/alexdray86/ClimbTheCliff
+
+### Quick Installation
+
+```r
+# Using devtools
+devtools::install_github("alexdray86/ClimbTheCliff", force=T)
+
+# Or using remotes
+remotes::install_github("alexdray86/ClimbTheCliff", force=T)
+```
+
+### Methods Overview
+
+- **CLIMB** (Cell-type abundance and expression deconvolution using Inverse Modeling of Bulk RNA-seq): Deconvolutes bulk RNA-seq data using single-cell RNA-seq references to predict cell-type proportions and high-resolution cell-type-specific gene expression for each sample.
+
+- **CLIFF** (Cell-type-specific drug sensitivity from deconvoluted expression profiles): Integrates CLIMB deconvolution results with drug sensitivity data (AUC values) to identify cell-type-specific drug responses, optionally incorporating somatic mutation data.
+
+See the [ClimbTheCliff README](https://github.com/alexdray86/ClimbTheCliff) for detailed documentation and examples.
 
 ## Setup 
 
-Here can be found the code to reproduce figures from the manuscript. In the present README, we will explain the main steps to be able to run the code. First of all, all notebook are in R language (requires R\>v4.0), and were ran with the IRkernel for jupyter notebook. Libraries needed to run each notebook are listed in the first cell of each notebook, and should be installed before running the notebook. Libraries can be installed directly inside the notebooks, and we provide an extra cell with installation commands.\\
+All notebooks are in R (requires R > v4.0) and were run with the IRkernel for Jupyter notebook. Libraries needed for each notebook are listed in the first cell and should be installed before running. Installation commands are provided in extra cells within the notebooks.
 
 ## Data: IMPORTANT 
 
-All the data required are stored in a Google Drive, publicly available with the following link: 
+All required data are stored in a publicly available Google Drive: 
 
-https://drive.google.com/drive/folders/1ev2uiHhoID1nWbutPxPRFkgJUCWLBVYQ?usp=sharing
+**Download link:** https://drive.google.com/file/d/1mL-ZxlkETq9EzZ85TP6Jmtx54NNv1cx1/view?usp=sharing
 
-The file data.zip can be unziped and the folder data/ should be placed at the root of this folder. 
+Unzip `data.zip` and place the `data/` folder at the root of this directory. 
 
-The data/ folder contains all the raw data of single-cell datasets, but also pre-processed data (e.g. deconovution results), allowing to perform the analysis without necessarily re-running all deconvolution methods. 
+The `data/` folder contains:
+- Raw single-cell datasets
+- Pre-processed data (e.g., deconvolution results)
+- Intermediate results for analysis without re-running all deconvolution methods
+ 
 
-## Python environment necessary for running TAPE and Scaden deconvolution methods
+## Python Environment for TAPE and Scaden
 
-To initiate the deconvolution process for predicting cell type proportions using the Scaden and TAPE methodologies, it is imperative to establish a functional Python environment. The necessary dependencies can be seamlessly installed within this environment using the instructions provided in the 'requirements_tape_scaden.txt' file. The ensuing directives detail the set-up procedure:
+To run TAPE and Scaden deconvolution methods, you need to set up a Python environment with the dependencies listed in `requirements_tape_scaden.txt`.
 
-Commence by generating a fresh Python environment:
+### Setup Instructions
 
-`python3 -m venv tape_scaden_env`
+1. Create a new Python environment:
+   ```bash
+   python3 -m venv tape_scaden_env
+   ```
 
-Activate the python environment:
+2. Activate the environment:
+   ```bash
+   source tape_scaden_env/bin/activate
+   ```
 
-`source tape_scaden_env/bin/activate`
+3. Install required libraries:
+   ```bash
+   python3 -m pip install -r requirements_tape_scaden.txt
+   ```
 
-Then, install all the libraries listed in the file requirements_tape_scaden.txt:
+### Implementation
 
-`python3 -m pip install -r requirements_tape_scaden.txt`
+The R notebooks trigger bash scripts that:
+1. Load the Python environment with required libraries
+2. Execute Python scripts for TAPE and Scaden methods
+3. Save results to CSV files that are read back into R
 
-This approach involves the following implementation strategy: An R notebook triggers a bash script that accomplishes two pivotal tasks. Firstly, it loads the requisite Python environment with the essential libraries. Subsequently, it initiates execution of the Python script involving the TAPE and Scaden methodologies. The output generated by the Python script, containing results, is deposited within a CSV file. This output is then ingested by the corresponding R script. This streamlined process empowers the direct execution of TAPE and Scaden deconvolution via the R notebook
+**Note:** TAPE and Scaden generate figures during execution that may pause the script. To avoid interruption, comment out the relevant plotting sections in the source code.
+ 
 
-A critical aspect to note is that the TAPE and Scaden methods generate graphical figures during execution, causing the script to pause until user interaction closes these figures. To bypass this interruption, one can comment out specific sections of the source code at the designated locations.
+## Notebook Descriptions
 
-XXX 
-
-## Description of the different Notebooks
-
-We furnish individual notebooks corresponding to distinct figures, labeled by their respective figure numbers. Hereinafter, we succinctly outline the contents of each notebook, facilitating users in reviewing specific code segments within the manuscript
+Each notebook corresponds to a specific figure in the manuscript. Below is a summary of each notebook's contents:
 
 ### Fig2_invitro_experiment.ipynb
 
-The notebooks pertain to in-vitro experiments conducted by our research group. These experiments involved the creation of cell line mixtures through precise cell counting and the documentation of individual cell line proportions. These mixtures were promptly subjected to standard bulk RNA sequencing. In the provided notebook, we employ a series of deconvolution techniques to decipher cell line fractions. This is achieved using a reference dataset derived from single-cell RNA sequencing, encompassing the same four constituent cell lines utilized in the experiment.
+In-vitro experiments with cell line mixtures created through precise cell counting. Cell line proportions were documented and mixtures were subjected to bulk RNA-seq. This notebook applies various deconvolution techniques to infer cell line fractions using a single-cell RNA-seq reference dataset of the same four cell lines.
 
 ### Fig3_1_preproc_integration.ipynb
 
-This notebook outlines our integration strategy for pairs of single-cell datasets. Initially, cell and gene subsets are extracted. Subsequently, the Seurat integration pipeline is applied to amalgamate the two datasets. This integration facilitates the transfer of cell subtype labels between datasets. Additionally, we create pseudo-bulks characterized by known cell subtype proportions, and store these datasets as RDS objects. These RDS objects serve as inputs for the subsequent Fig3_2_deconvolution_panel.ipynb notebook, which is dedicated to the deconvolution of cell subtype proportions. 
+Integration strategy for pairs of single-cell datasets:
+- Extract cell and gene subsets
+- Apply Seurat integration pipeline to merge datasets
+- Transfer cell subtype labels between datasets
+- Create pseudo-bulks with known cell subtype proportions
+- Store datasets as RDS objects for downstream deconvolution
 
 ### Fig3_2_deconvolution_panel.ipynb
 
-Utilizing the processed dataset derived from the Fig3_1_preproc_integration.ipynb notebook, this section initiates our array of deconvolution techniques within a cross-dataset framework. The outcomes are subsequently preserved and subjected to analysis in the ensuing notebook, denoted as Fig3_3_analysis.ipynb. 
+Applies deconvolution techniques in a cross-dataset framework using processed datasets from Fig3_1. Results are saved for analysis in Fig3_3.
 
 ### Fig3_3_analysis.ipynb
 
-The outcomes of the deconvolution process are juxtaposed against the established ground truth cell subtype proportions through the application of four distinct metrics. For each of the twelve conducted analyses, boxplots and ranking plots are generated.
+Compares deconvolution outcomes against ground truth cell subtype proportions using four metrics. Generates boxplots and ranking plots for all twelve analyses.
 
 ### Fig3_4_amlCohorts.ipynb
 
-In this section, we execute CLIMB deconvolution across three cohorts of AML patients and visualize the outcomes as a heatmap. Additionally, we conduct a comprehensive evaluation by comparing the CLIMB deconvolution results with both Van Galen signature scores and LSC17 signature scores.
+Executes CLIMB deconvolution across three AML patient cohorts and visualizes results as heatmaps. Compares CLIMB results with Van Galen signature scores and LSC17 signature scores.
+
+### Fig3_5_CLIMB_simulation.ipynb
+
+Simulation framework to validate CLIMB's performance:
+- Creates pseudo-bulk samples from single-cell reference with known cell-type proportions
+- Samples cells according to specified proportions to generate realistic bulk mixtures
+- Compares CLIMB deconvolution against other methods using simulated ground truth
+- Evaluates correlation between pseudo-bulks and signature matrices
 
 ### Fig4_expression_deconvolution.ipynb
 
-This notebook undertakes two distinct deconvolution scenarios. Initially, we engage in the deconvolution of cell subtype expressions rooted in both an in-vitro experiment (employing ground truth from bulk RNA-seq) and a cross-dataset context (Van Galen > Naldini). Subsequently, we implement an over-expression procedure involving 20 genes within the HSC-like cell subtype. This over-expression is guided by the Van Galen > Naldini analysis, leading to a subsequent elevation in gene expression within a pseudo-bulk formed from Naldini samples.
- 
+Two deconvolution scenarios:
+1. Cell subtype expression deconvolution from in-vitro experiment (bulk RNA-seq ground truth) and cross-dataset context (Van Galen → Naldini)
+2. Over-expression procedure: 20 genes over-expressed in HSC-like cell subtype, guided by Van Galen → Naldini analysis
+
 ### Fig5_CLIFF_invitro.ipynb
 
-In this section, we engage in the CLIFF deconvolution of drug sensitivity data acquired from our conducted in-vitro experiment. The basis for our ground truth originates from the drug sensitivity screening conducted on individual pure cell lines
+CLIFF deconvolution of drug sensitivity data from in-vitro experiments. Ground truth based on drug sensitivity screening of individual pure cell lines.
 
 ### Fig6_CLIFF_beataml.ipynb
 
-In this segment, we execute CLIFF deconvolution on the beatAML drug screening data. We leverage CLIMB deconvoluted cell subtype proportions and expression as a reference framework. Subsequently, we generate illustrative figures to visually represent the obtained results.
+CLIFF deconvolution on BeatAML drug screening data using CLIMB-deconvoluted cell subtype proportions and expression as reference. Generates figures visualizing the results.
 
 ### Fig6_CLIFF_simulation.ipynb
 
-In this section, we conduct a simulation of drug sensitivity screening data with a comparable scale to the beatAML datasets. Our approach involves the utilization of 200 simulated pseudo-bulks as templates, which are then employed to simulate drug screening data exhibiting diverse patterns. Subsequently, we perform CLIFF deconvolution on these simulated datasets. To comprehensively evaluate our results, we compare the outcomes of CLIFF with several alternative methodologies, including an approach akin to Bottomly, Zeng, and a linear regression technique that employs CLIMB deconvoluted proportions as input.
+Simulation of drug sensitivity screening data at BeatAML scale:
+- Uses 200 simulated pseudo-bulks to simulate drug screening data with diverse patterns
+- Performs CLIFF deconvolution on simulated datasets
+- Compares CLIFF results with alternative methods (Bottomly-like approach, Zeng, and linear regression using CLIMB proportions)
 
 ### Fig7_CLIFF-SC.ipynb
 
-In this notebook, we have devised a singular approach for drug sensitivity prediction at the single-cell level, an adaptation of our existing CLIFF method termed CLIFF-SC. The input for this methodology is drawn from the BeatAML dataset. We apply this approach to deconvolute drug screening data associated with Van Galen's single-cell dataset. This deconvolution is guided by single-cell to bulk coefficients obtained via the CLIMB-SC technique.
+CLIFF-SC: Single-cell level drug sensitivity prediction (adaptation of CLIFF). Applies to BeatAML dataset to deconvolute Van Galen's single-cell drug screening data using single-cell to bulk coefficients from CLIMB-SC.
+
