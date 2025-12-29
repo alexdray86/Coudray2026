@@ -1,6 +1,6 @@
-# Deconvolution of ex-vivo drug screening data and bulk tissue expression predicts the abundance and viability of cancer cell subpopulations
+# Computational deconvolution of drug sensitivity via single-cell–to–bulk transcriptome mapping
 
-This repository contains code to reproduce all figures from the manuscript `Deconvolution of ex-vivo drug screening data and bulk tissue expression predicts the abundance and viability of cancer cell subpopulations` from Coudray et al. 2026.
+This repository contains code to reproduce all figures from Coudray et al. 2026.
 
 ## ClimbTheCliff R Package
 
