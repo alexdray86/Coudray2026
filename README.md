@@ -1,85 +1,82 @@
-# Computational deconvolution of drug sensitivity via single-cell–to–bulk transcriptome mapping
+# Coudray2026
 
-This repository contains code to reproduce all figures from Coudray et al. 2026.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![R](https://img.shields.io/badge/R-%3E%3D%204.0-276DC3.svg)
+[![ClimbTheCliff](https://img.shields.io/badge/package-ClimbTheCliff-blue.svg)](https://github.com/alexdray86/ClimbTheCliff)
+[![Preprint](https://img.shields.io/badge/bioRxiv-10.1101%2F2023.05.10.540140-b31b1b.svg)](https://www.biorxiv.org/content/10.1101/2023.05.10.540140v3)
 
-## ClimbTheCliff R Package
+Reproducibility repository for `Computational deconvolution of drug sensitivity via single-cell–to–bulk transcriptome mapping`, Coudray et al. — [preprint on bioRxiv](https://www.biorxiv.org/content/10.1101/2023.05.10.540140v3) (posted under an earlier title, will be updated on publication). Contains the R notebooks that generate every main and supplemental figure. The underlying CLIMB and CLIFF deconvolution methods live in the companion R package [ClimbTheCliff](https://github.com/alexdray86/ClimbTheCliff), including full method documentation and a small standalone example dataset — see [alexdray86.github.io/ClimbTheCliff](https://alexdray86.github.io/ClimbTheCliff/).
 
-The main methods developed in this work (CLIMB and CLIFF) are available as an R package:
+## Table of Contents
 
-**Repository:** https://github.com/alexdray86/ClimbTheCliff
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Data](#data)
+- [Notebook Descriptions](#notebook-descriptions)
+- [Shared Helper Functions](#shared-helper-functions)
+- [Python Environment for TAPE and Scaden](#python-environment-for-tape-and-scaden)
+- [Citation](#citation)
+- [License](#license)
+- [Issues and Support](#issues-and-support)
 
-### Quick Installation
+---
 
-To reproduce the results in this repository, install the exact frozen release used here (`1.1.0`):
+## Requirements
+
+- R > 4.0, run through the [IRkernel](https://irkernel.github.io/) for Jupyter
+- [ClimbTheCliff](https://github.com/alexdray86/ClimbTheCliff), pinned to the frozen release used throughout this repository (`1.1.0`) — see [Installation](#installation)
+- ClimbTheCliff's own dependencies, attached alongside it: [`Biobase`](https://bioconductor.org/packages/Biobase/), [`glmnet`](https://cran.r-project.org/package=glmnet), [`reshape2`](https://cran.r-project.org/package=reshape2)
+- Additional packages used by individual notebooks for comparison methods and preprocessing (e.g. `Seurat`, `MuSiC`, `BisqueRNA`, `matrixStats`) — each notebook lists what it needs in its first cell; install those before running it
+- A Python environment for the TAPE and Scaden comparison methods — see [Python Environment for TAPE and Scaden](#python-environment-for-tape-and-scaden)
+
+## Installation
+
+Clone this repository, then install the exact frozen `ClimbTheCliff` release used to produce these results:
 
 ```r
 # Using devtools
-devtools::install_github("alexdray86/ClimbTheCliff", ref = "1.1.0", force=T)
+devtools::install_github("alexdray86/ClimbTheCliff", ref = "1.1.0", force = T)
 
 # Or using remotes
-remotes::install_github("alexdray86/ClimbTheCliff", ref = "1.1.0", force=T)
+remotes::install_github("alexdray86/ClimbTheCliff", ref = "1.1.0", force = T)
 ```
 
-### Methods Overview
+```bash
+git clone https://github.com/alexdray86/Coudray2026.git
+cd Coudray2026
+```
 
-- **CLIMB** (Cell-type abundance and expression deconvolution using Inverse Modeling of Bulk RNA-seq): Deconvolutes bulk RNA-seq data using single-cell RNA-seq references to predict cell-type proportions and high-resolution cell-type-specific gene expression for each sample.
+Then download the data bundle — see [Data](#data) below — before running any notebook.
 
-- **CLIFF** (Cell-type-specific drug sensitivity from deconvoluted expression profiles): Integrates CLIMB deconvolution results with drug sensitivity data (AUC values) to identify cell-type-specific drug responses, optionally incorporating somatic mutation data.
+---
 
-See the [ClimbTheCliff README](https://github.com/alexdray86/ClimbTheCliff) for detailed documentation and examples.
+## Data
 
-## Setup 
-
-All notebooks are in R (requires R > v4.0) and were run with the IRkernel for Jupyter notebook. Libraries needed for each notebook are listed in the first cell and should be installed before running — install ClimbTheCliff itself as described above (pinned to `1.1.0`).
-
-## Data: IMPORTANT 
-
-All required data are stored in a publicly available Google Drive: 
+All data used across the notebooks are stored in a single, publicly available Google Drive bundle:
 
 **Download link:** https://drive.google.com/file/d/1mL-ZxlkETq9EzZ85TP6Jmtx54NNv1cx1/view?usp=sharing
 
-Unzip `data.zip` and place the `data/` folder at the root of this directory. 
+Unzip `data.zip` and place the resulting `data/` folder at the root of this repository.
 
-The `data/` folder contains:
-- Raw single-cell datasets
-- Pre-processed data (e.g., deconvolution results)
-- Intermediate results for analysis without re-running all deconvolution methods
- 
+| Folder | Contents |
+|---|---|
+| `invitro_experiment/` | Raw single-cell and bulk RNA-seq (`ExpressionSet`) objects for the 4-cell-line in-vitro mixtures, plus their measured drug response (Fig. 2, Fig. 5) |
+| `pseudobulks_climb/` | Paired single-cell references and pseudo-bulk mixtures for each cross-dataset pair (AML, CRC, MEL, BREAST, GBM) used in the deconvolution benchmark (Fig. 3) |
+| `aml_3cohorts/` | BeatAML, TCGA-LAML and Leucegene bulk RNA-seq, LSC17 scores, and precomputed deconvolution results for the three-cohort AML analysis (Fig. 3.4) |
+| `expression_deconv/` | Pseudo-bulks with synthetic over-expression, used to benchmark cell-type-specific expression deconvolution (Fig. 4) |
+| `beataml_drug/` | BeatAML drug screening (AUC) data and precomputed CLIMB expression output, for cell-type-specific drug sensitivity inference (Fig. 6) |
+| `simulation_aml/` | Simulated pseudo-bulks and drug sensitivity ground truth used to benchmark CLIFF against alternative methods (Fig. 6 simulation) |
+| `cliff_sc/` | Van Galen single-cell drug screening data and single-cell-level CLIFF-SC inputs/outputs (Fig. 7) |
+| `GeneLength.txt` | Gene length reference required by TAPE/Scaden |
+| `review_litterature_drug_sensitivity.csv` | Literature-curated drug sensitivity values used for cross-checks |
 
-## Python Environment for TAPE and Scaden
+Some notebooks also write intermediate results back into `data/` so that later steps (or later re-runs) don't have to repeat expensive deconvolution methods.
 
-To run TAPE and Scaden deconvolution methods, you need to set up a Python environment with the dependencies listed in `requirements_tape_scaden.txt`.
-
-### Setup Instructions
-
-1. Create a new Python environment:
-   ```bash
-   python3 -m venv tape_scaden_env
-   ```
-
-2. Activate the environment:
-   ```bash
-   source tape_scaden_env/bin/activate
-   ```
-
-3. Install required libraries:
-   ```bash
-   python3 -m pip install -r requirements_tape_scaden.txt
-   ```
-
-### Implementation
-
-The R notebooks trigger bash scripts that:
-1. Load the Python environment with required libraries
-2. Execute Python scripts for TAPE and Scaden methods
-3. Save results to CSV files that are read back into R
-
-**Note:** TAPE and Scaden generate figures during execution that may pause the script. To avoid interruption, comment out the relevant plotting sections in the source code.
- 
+---
 
 ## Notebook Descriptions
 
-Each notebook corresponds to a specific figure in the manuscript. Below is a summary of each notebook's contents:
+Each notebook corresponds to a specific figure in the manuscript. Below is a summary of each notebook's contents.
 
 ### Fig2_invitro_experiment.ipynb
 
@@ -143,3 +140,66 @@ CLIFF-SC: Single-cell level drug sensitivity prediction (adaptation of CLIFF). A
 
 Round-2 revision notebook for the PLOS Computational Biology submission. Builds the 7-panel supplemental figure (Supplemental Fig. 10) addressing all reviewer comments: CLIMB component ablation (A), reference coverage sweep (B), CLIFF identifiability (C), EM initialization sensitivity (D-E), runtime scaling (F), and uncertainty propagation from CLIMB into CLIFF (G).
 
+---
+
+## Shared Helper Functions
+
+[`shared_functions.R`](shared_functions.R) collects a handful of small utility functions (metric computation, cell-type label reformatting, TAPE/Scaden result loading, etc.) that are used identically across most notebooks. Each notebook `source()`s it instead of redefining these functions inline. Functions that genuinely differ between notebooks (e.g. `Fig3_2_deconvolution_panel.ipynb`'s own `reformat_celltypes`) are kept local to that notebook.
+
+---
+
+## Python Environment for TAPE and Scaden
+
+To run TAPE and Scaden deconvolution methods, you need to set up a Python environment with the dependencies listed in `requirements_tape_scaden.txt`.
+
+### Setup Instructions
+
+1. Create a new Python environment:
+   ```bash
+   python3 -m venv tape_scaden_env
+   ```
+
+2. Activate the environment:
+   ```bash
+   source tape_scaden_env/bin/activate
+   ```
+
+3. Install required libraries:
+   ```bash
+   python3 -m pip install -r requirements_tape_scaden.txt
+   ```
+
+### Implementation
+
+The R notebooks trigger bash scripts that:
+1. Load the Python environment with required libraries
+2. Execute Python scripts for TAPE and Scaden methods
+3. Save results to CSV files that are read back into R
+
+**Note:** TAPE and Scaden generate figures during execution that may pause the script. To avoid interruption, comment out the relevant plotting sections in the source code.
+
+---
+
+## Citation
+
+If you use this code or the underlying methods in your research, please cite:
+
+> Coudray A, Forey R, Bejar Haro B, Martins F, Carlevaro-Fita J, Sheppard S, Offner SE, La Manno G, Obozinski G, Trono D. *Computational deconvolution of drug sensitivity via single-cell–to–bulk transcriptome mapping.* Manuscript in revision, PLOS Computational Biology.
+
+A preprint is available on bioRxiv: [doi.org/10.1101/2023.05.10.540140](https://www.biorxiv.org/content/10.1101/2023.05.10.540140v3) (posted under an earlier title, *Profiling drug sensitivity of leukemic stem cells via bulk-to-single-cell deconvolution* — the title above reflects the current manuscript).
+
+*(Full citation with volume/DOI will be updated once the manuscript is published.)*
+
+---
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](license) file for details.
+
+---
+
+## Issues and Support
+
+For bug reports, feature requests, or questions, please open an issue on the GitHub repository:
+
+https://github.com/alexdray86/Coudray2026/issues
