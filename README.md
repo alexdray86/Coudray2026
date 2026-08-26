@@ -10,12 +10,14 @@ The main methods developed in this work (CLIMB and CLIFF) are available as an R 
 
 ### Quick Installation
 
+To reproduce the results in this repository, install the exact frozen release used here (`1.1.0`):
+
 ```r
 # Using devtools
-devtools::install_github("alexdray86/ClimbTheCliff", force=T)
+devtools::install_github("alexdray86/ClimbTheCliff", ref = "1.1.0", force=T)
 
 # Or using remotes
-remotes::install_github("alexdray86/ClimbTheCliff", force=T)
+remotes::install_github("alexdray86/ClimbTheCliff", ref = "1.1.0", force=T)
 ```
 
 ### Methods Overview
@@ -28,7 +30,7 @@ See the [ClimbTheCliff README](https://github.com/alexdray86/ClimbTheCliff) for 
 
 ## Setup 
 
-All notebooks are in R (requires R > v4.0) and were run with the IRkernel for Jupyter notebook. Libraries needed for each notebook are listed in the first cell and should be installed before running. Installation commands are provided in extra cells within the notebooks.
+All notebooks are in R (requires R > v4.0) and were run with the IRkernel for Jupyter notebook. Libraries needed for each notebook are listed in the first cell and should be installed before running — install ClimbTheCliff itself as described above (pinned to `1.1.0`).
 
 ## Data: IMPORTANT 
 
@@ -136,4 +138,8 @@ Simulation of drug sensitivity screening data at BeatAML scale:
 ### Fig7_CLIFF-SC.ipynb
 
 CLIFF-SC: Single-cell level drug sensitivity prediction (adaptation of CLIFF). Applies to BeatAML dataset to deconvolute Van Galen's single-cell drug screening data using single-cell to bulk coefficients from CLIMB-SC.
+
+### SFig10_PLOSone_CompBio.ipynb
+
+Round-2 revision notebook for the PLOS Computational Biology submission. Builds the 7-panel supplemental figure (Supplemental Fig. 10) addressing all reviewer comments: CLIMB component ablation (A), reference coverage sweep (B), CLIFF identifiability (C), EM initialization sensitivity (D-E), runtime scaling (F), and uncertainty propagation from CLIMB into CLIFF (G).
 
