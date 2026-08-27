@@ -129,7 +129,7 @@ Simulation of drug sensitivity screening data at BeatAML scale:
 
 CLIFF-SC: Single-cell level drug sensitivity prediction (adaptation of CLIFF). Applies to BeatAML dataset to deconvolute Van Galen's single-cell drug screening data using single-cell to bulk coefficients from CLIMB-SC.
 
-### SFig10_PLOSone_CompBio.ipynb
+### SFig10_PLOS_CompBio.ipynb
 
 Round-2 revision notebook for the PLOS Computational Biology submission. Builds the 7-panel supplemental figure (Supplemental Fig. 10) addressing all reviewer comments: CLIMB component ablation (A), reference coverage sweep (B), CLIFF identifiability (C), EM initialization sensitivity (D-E), runtime scaling (F), and uncertainty propagation from CLIMB into CLIFF (G).
 
