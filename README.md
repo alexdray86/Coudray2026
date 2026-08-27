@@ -63,7 +63,6 @@ Unzip `data.zip` and place the resulting `data/` folder at the root of this repo
 | `invitro_experiment/` | Raw single-cell and bulk RNA-seq (`ExpressionSet`) objects for the 4-cell-line in-vitro mixtures, plus their measured drug response (Fig. 2, Fig. 5) |
 | `pseudobulks_climb/` | Paired single-cell references and pseudo-bulk mixtures for each cross-dataset pair (AML, CRC, MEL, BREAST, GBM) used in the deconvolution benchmark (Fig. 3) |
 | `aml_3cohorts/` | BeatAML, TCGA-LAML and Leucegene bulk RNA-seq, LSC17 scores, and precomputed deconvolution results for the three-cohort AML analysis (Fig. 3.4) |
-| `expression_deconv/` | Pseudo-bulks with synthetic over-expression, used to benchmark cell-type-specific expression deconvolution (Fig. 4) |
 | `beataml_drug/` | BeatAML drug screening (AUC) data and precomputed CLIMB expression output, for cell-type-specific drug sensitivity inference (Fig. 6) |
 | `simulation_aml/` | Simulated pseudo-bulks and drug sensitivity ground truth used to benchmark CLIFF against alternative methods (Fig. 6 simulation) |
 | `cliff_sc/` | Van Galen single-cell drug screening data and single-cell-level CLIFF-SC inputs/outputs (Fig. 7) |
@@ -110,12 +109,6 @@ Simulation framework to validate CLIMB's performance:
 - Samples cells according to specified proportions to generate realistic bulk mixtures
 - Compares CLIMB deconvolution against other methods using simulated ground truth
 - Evaluates correlation between pseudo-bulks and signature matrices
-
-### Fig4_expression_deconvolution.ipynb
-
-Two deconvolution scenarios:
-1. Cell subtype expression deconvolution from in-vitro experiment (bulk RNA-seq ground truth) and cross-dataset context (Van Galen → Naldini)
-2. Over-expression procedure: 20 genes over-expressed in HSC-like cell subtype, guided by Van Galen → Naldini analysis
 
 ### Fig5_CLIFF_invitro.ipynb
 
